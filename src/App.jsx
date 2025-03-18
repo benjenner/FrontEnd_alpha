@@ -8,10 +8,10 @@ import Members from "./pages/protected/admin/Members";
 import Clients from "./pages/protected/admin/Clients";
 
 const isAuthenticated = false;
-const isAdmin = true;
+const isAdmin = false;
 
 const ProtectedRoute = ({ children }) =>
-  isAuthenticated ? children : <Navigate to="/signin" replace />;
+  isAuthenticated ? children : <Navigate to="/signup" replace />;
 const AdminRoute = ({ children }) =>
   isAuthenticated && isAdmin ? (
     children
@@ -51,10 +51,10 @@ const routesConfig = [
           </AdminRoute>
         ),
       },
-      { path: "/", element: <Navigate to="/admin/signin" replace /> },
+      { path: "/", element: <Navigate to="/admin/signup" replace /> },
     ],
   },
-  { path: "*", element: <Navigate to="/signin" replace /> },
+  { path: "*", element: <Navigate to="/signup" replace /> },
 ];
 
 function App() {
