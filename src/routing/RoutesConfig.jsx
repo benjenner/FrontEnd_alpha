@@ -15,10 +15,12 @@ const routesConfig = [
   {
     element: <CenterScreenLayout />,
     children: [
+      { path: "/", element: <Navigate to="/auth/signin" replace /> }, // Root omdirigerar till signin
       { path: "/auth/signup", element: <SignUp /> },
       { path: "/auth/signin", element: <SignIn /> },
     ],
   },
+  // Skyddade rutter
   {
     element: (
       <ProtectedRoute>
@@ -43,7 +45,8 @@ const routesConfig = [
           </AdminRoute>
         ),
       },
-      { path: "*", element: <Navigate to="/admin/projects" replace /> },
+      // Catch-all route för icke-matcherande skyddade rutter
+      { path: "*", element: <Navigate to="/auth/signin" replace /> },
     ],
   },
 ];

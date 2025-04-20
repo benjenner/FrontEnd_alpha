@@ -1,29 +1,52 @@
-import { useState, useEffect, createContext } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
+import { useAuth } from "./AuthContext";
 
-export const ClientsContext = createContext();
-export const ClientsProvider = ({ children }) => {
-  const apiUri = "https://localhost:7037/api/clients";
+const ClientContext = createContext();
 
+export const ClientProvider = ({ children }) => {
+  const { authFetch } = useAuth();
+  const apiUrl = "https://localhost:7037/api/clients";
   const [clients, setClients] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const getClients = async () => {
+  const fetchClients = async () => {
     try {
-      const res = await fetch(apiUri);
+      const res = await authFetch(apiUrl);
+      const data = await res.json();
 
-      if (res.ok) {
-        const data = await res.json();
-        setClients(data);
+      if (!res.ok) {
+        setErrorMessage(data.error || "Failed to fetch clients");
+        return;
       }
-    } catch {}
+
+      setClients(data);
+      return data;
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("An error occurred while fetching clients");
+    }
   };
 
-  useEffect(() => {
-    getClients();
-  }, []);
+  const addClient = async (formData) => {};
+
+  const deleteClient = async (clientId) => {};
+
+  const updateClient = async (clientId, updatedData) => {};
 
   return (
-    <ClientsContext.Provider value={{ clients, getClients }}>
+    <ClientContext.Provider
+      value={{
+        clients,
+        errorMessage,
+        fetchClients,
+        addClient,
+        deleteClient,
+        updateClient,
+      }}
+    >
       {children}
-    </ClientsContext.Provider>
+    </ClientContext.Provider>
   );
 };
+
+export const useClients = () => useContext(ClientContext);

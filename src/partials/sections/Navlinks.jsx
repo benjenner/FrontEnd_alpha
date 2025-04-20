@@ -4,6 +4,8 @@ import { useAuth } from "../../contexts/AuthContext";
 
 const NavLinks = () => {
   const { auth } = useAuth();
+  // Hämtar ut isAdmin från auth
+  const { isAdmin } = auth;
 
   return (
     <nav className="nav-links">
@@ -13,7 +15,7 @@ const NavLinks = () => {
         iconClass="fa-duotone fa-solid fa-briefcase"
       />
 
-      {auth.role === "admin" && (
+      {isAdmin && (
         <>
           <NavLinkItem
             to="/admin/members"
