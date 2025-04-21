@@ -75,6 +75,23 @@ const Projects = () => {
     fetchClientData();
   }, []);
 
+  useEffect(() => {
+    if (projectToUpdate) {
+      console.log(projectToUpdate);
+      formikUpdate.setValues({
+        projectName: projectToUpdate.projectName || "",
+        clientName: projectToUpdate.clientName || "",
+        description: projectToUpdate.description || "",
+        startDate: projectToUpdate.startDate || "",
+        endDate: projectToUpdate.endDate || "",
+        projectOwner: projectToUpdate.userId || "",
+        budget: projectToUpdate.budget || "",
+        image: null,
+        statusId: projectToUpdate.statusName || "",
+      });
+    }
+  }, [projectToUpdate]);
+
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
@@ -123,7 +140,7 @@ const Projects = () => {
   });
 
   const formikUpdate = useFormik({
-    initialValues: projectToUpdate || {
+    initialValues: {
       projectName: "",
       clientName: "",
       description: "",
@@ -137,10 +154,10 @@ const Projects = () => {
 
     validate: updateProjectValidation,
     onSubmit: async (values) => {
-      console.log("Formik values:", values);
       const formData = new FormData();
 
-      formData.append("Id", projectToUpdate.Id);
+      formData.append("Id", projectToUpdate.id);
+      console.log(`Projektets ID: ${projectToUpdate.id}`);
       Object.entries(values).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           formData.append(key, value);
@@ -148,6 +165,10 @@ const Projects = () => {
       });
 
       try {
+        formData.forEach((value, key) => {
+          console.log(`${key}: ${value}`);
+        });
+
         const updatedProject = await updateProject(formData);
         if (updatedProject) {
           alert("Project updated successfully!");
@@ -205,12 +226,12 @@ const Projects = () => {
                 <div className="form-group">
                   <label className="form-label">Upload Image</label>
                   <input
-                    name="image"
+                    name="NewImage"
                     className="form-input"
                     type="file"
                     onChange={(event) => {
                       formikUpdate.setFieldValue(
-                        "image",
+                        "NewImage",
                         event.currentTarget.files[0]
                       );
                     }}
